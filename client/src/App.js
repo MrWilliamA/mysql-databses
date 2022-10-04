@@ -5,14 +5,28 @@ import Axios from "axios";
 function App() {
   const [movieName, setMovieName] = useState("");
   const [review, setReview] = useState("");
+  const [movieReviewList, setMovieReviewList] = useState([]);
+
+  useEffect(() => {
+    Axios.get("http://localhost:3001/api/get").then((response) => {
+      setMovieReviewList(response.data);
+    });
+  }, []);
 
   const submitReview = () => {
     Axios.post("http://localhost:3001/api/insert", {
       movieName: movieName,
       movieReview: review,
-    }).then(() => {
-      alert("successful insert");
     });
+
+    setMovieReviewList([
+      ...movieReviewList,
+      { movieName: movieName, movieReview: review },
+    ]);
+  };
+
+  const deleteReview = (movie) => {
+    Axios.delete(`http://localhost:3001/api/delete/${movie}`);
   };
 
   return (
@@ -32,6 +46,23 @@ function App() {
           onChange={(e) => setReview(e.target.value)}
         />
         <button onClick={submitReview}>Submit</button>
+        {movieReviewList.map((value) => {
+          return (
+            <div className="card">
+              <h1>{value.movieName} </h1>
+              <p>{value.movieReview}</p>
+              <button
+                onClick={() => {
+                  deleteReview(value.movieName);
+                }}
+              >
+                Delete
+              </button>
+              <input type="text" />
+              <button id="updateInput">Update</button>
+            </div>
+          );
+        })}
       </section>
     </div>
   );

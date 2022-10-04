@@ -18,7 +18,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.get("/api/get", (req, res) => {
   const sqlSelect = "SELECT * FROM movie_reviews";
   db.query(sqlSelect, (err, result) => {
-    console.log(result);
+    res.send(result);
   });
 });
 
@@ -29,17 +29,18 @@ app.post("/api/insert", (req, res) => {
   const sqlInsert =
     "INSERT INTO movie_reviews (movieName, movieReview) VALUES (?,?)";
   db.query(sqlInsert, [movieName, movieReview], (err, result) => {
-    console.log(res);
+    console.log(result);
   });
 });
 
-// app.get("/", (req, res) => {
-//   const sqlInsert =
-//     "INSERT INTO movie_reviews (movieName, movieReview) VALUES ('Inception', 'such a good movie!');";
-//   db.query(sqlInsert, (err, result) => {
-//     res.send("Hello World");
-//   });
-// });
+app.delete("api/delete/:movieName", (req, res) => {
+  const name = req.params.movieName;
+  const sqlDelete = "DELETE FROM movie_reviews WHERE movieName = ?";
+
+  db.query(sqlDelete, name, (err, result) => {
+    if (err) console.log(err);
+  });
+});
 
 app.listen(3001, () => {
   console.log("testing s");
