@@ -6,15 +6,16 @@ function App() {
   const [movieName, setMovieName] = useState("");
   const [review, setReview] = useState("");
   const [movieReviewList, setMovieReviewList] = useState([]);
+  const [newReview, setNewReview] = useState("");
 
   useEffect(() => {
-    Axios.get("http://localhost:3001/api/get").then((response) => {
+    Axios.get("https://warcherdesign.com/mysql/api/get").then((response) => {
       setMovieReviewList(response.data);
     });
   }, []);
 
   const submitReview = () => {
-    Axios.post("http://localhost:3001/api/insert", {
+    Axios.post("https://warcherdesign.com/mysql/api/insert", {
       movieName: movieName,
       movieReview: review,
     });
@@ -26,7 +27,15 @@ function App() {
   };
 
   const deleteReview = (movie) => {
-    Axios.delete(`http://localhost:3001/api/delete/${movie}`);
+    Axios.delete(`https://warcherdesign.com/mysql/api/delete/${movie}`);
+  };
+
+  const updateReview = (movie) => {
+    Axios.put("https://warcherdesign.com/mysql/api/update", {
+      movieName: movie,
+      movieReview: newReview,
+    });
+    setNewReview("");
   };
 
   return (
@@ -58,8 +67,20 @@ function App() {
               >
                 Delete
               </button>
-              <input type="text" />
-              <button id="updateInput">Update</button>
+              <input
+                type="text"
+                id="updateInput"
+                onChange={(e) => {
+                  setNewReview(e.target.value);
+                }}
+              />
+              <button
+                onClick={() => {
+                  updateReview(value.movieName);
+                }}
+              >
+                Update
+              </button>
             </div>
           );
         })}
